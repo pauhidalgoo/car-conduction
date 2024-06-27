@@ -14,7 +14,7 @@ pygame.display.set_caption("F1 Circuit Game")
 
 car_speed = START_SPEED
 car_angle = 90
-start_time = None
+start_time = time.time()
 lap_completed = False
 
 def blit_rotate_center(surf, image, top_left, angle):

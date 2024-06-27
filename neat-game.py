@@ -76,7 +76,7 @@ def eval_genomes(genomes, config):
             if output[2] > 0.5:
                 car.rotate('none')
 
-            ge[i].fitness += 3
+            ge[i].fitness += 1
             ge[i].fitness -= car.check_collision(background)
 
             if car.check_checkpoint():
