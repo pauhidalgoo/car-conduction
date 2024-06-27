@@ -6,13 +6,10 @@ import random
 import math
 from constants import *
 from car_class import Car
-# Initialize Pygame
+
 pygame.init()
 
-# Load images
 background = pygame.image.load('./Assets/background.png')
-
-# Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("F1 Circuit Game")
 
@@ -22,14 +19,15 @@ def run_neat(config):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    winner = p.run(eval_genomes, 50)
+    checkpoint = neat.Checkpointer(1, filename_prefix='./Checkpoints/neat-checkpoint-')
+    p.add_reporter(checkpoint)
+    winner = p.run(eval_genomes, 100)
     print('\nBest genome:\n{!s}'.format(winner))
 
 def draw_checkpoints(screen, checkpoints):
     for (cx, cy) in checkpoints:
         pygame.draw.circle(screen, (255, 0, 0), (cx, cy), 10)
 
-# Function to evaluate the genomes
 def eval_genomes(genomes, config):
     nets = []
     cars = []
