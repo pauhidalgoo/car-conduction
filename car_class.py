@@ -9,7 +9,7 @@ class Car:
         self.image = car_image
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = START_SPEED
-        self.angle = 90
+        self.angle = 180
         self.center = [x, y]
         self.distance_traveled = 0
         self.last_checkpoint = -1
@@ -36,12 +36,14 @@ class Car:
         pixel_color = background.get_at(self.rect.center)
         if pixel_color == BLACK:
             self.speed = 3
-            return 3
+            return False
         elif pixel_color == GREEN:
             self.speed = 2
-            return 6
+            return False
         elif pixel_color == PURPLE:
             return False
+        elif pixel_color == GREEN_END:
+            return -100000
         else:
             self.speed = START_SPEED
         return True

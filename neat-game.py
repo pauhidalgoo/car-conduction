@@ -62,7 +62,7 @@ def eval_genomes(genomes, config):
         for i, car in enumerate(cars):
             car.move()
             if not car.check_collision(background):
-                ge[i].fitness -= 1000
+                ge[i].fitness -= 200
                 cars.pop(i)
                 nets.pop(i)
                 ge.pop(i)
@@ -70,13 +70,15 @@ def eval_genomes(genomes, config):
 
             output = nets[i].activate((car.rect.centerx, car.rect.centery, car.angle, car.speed))
             if output[0] > 0.5:
+                if output[1] > 0.5:
+                    car.rotate('none')
                 car.rotate('left')
             elif output[1] > 0.5:
                 car.rotate('right')
-            elif output[2] > 0.5:
+            if output[2] > 0.5:
                 car.rotate('none')
 
-            ge[i].fitness += 0.5
+            ge[i].fitness += 3
             ge[i].fitness -= car.check_collision(background)
 
             if car.check_checkpoint():
