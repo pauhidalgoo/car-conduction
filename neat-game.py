@@ -5,63 +5,18 @@ import os
 import random
 import math
 from constants import *
-
+from car_class import Car
 # Initialize Pygame
 pygame.init()
 
-
 # Load images
 background = pygame.image.load('./Assets/background.png')
-car_image = pygame.image.load('./Assets/car_image.png')
 
 # Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("F1 Circuit Game")
 
-# Car class to handle the car properties and actions
-class Car:
-    def __init__(self, x, y):
-        self.image = car_image
-        self.rect = self.image.get_rect(center=(x, y))
-        self.speed = START_SPEED
-        self.angle = 0
-        self.center = [x, y]
-        self.distance_traveled = 0
 
-    def move(self):
-        rad = math.radians(self.angle)
-        self.center[0] += self.speed * math.cos(rad)
-        self.center[1] -= self.speed * math.sin(rad)
-        self.rect = self.image.get_rect(center=self.center)
-        self.distance_traveled += self.speed
-
-    def rotate(self, direction):
-        if direction == 'left':
-            self.angle += 5
-        elif direction == 'right':
-            self.angle -= 5
-
-    def check_collision(self, background):
-        if (self.center[0] < 0 or self.center[0] >= WIDTH or 
-            self.center[1] < 0 or self.center[1] >= HEIGHT):
-            return False
-        pixel_color = background.get_at(self.rect.center)
-        if pixel_color == BLACK:
-            self.speed = 3
-        elif pixel_color == GREEN:
-            self.speed = 2
-        elif pixel_color == PURPLE:
-            return False
-        else:
-            self.speed = START_SPEED
-        return True
-
-    def draw(self, screen):
-        rotated_image = pygame.transform.rotate(self.image, self.angle)
-        new_rect = rotated_image.get_rect(center=self.rect.center)
-        screen.blit(rotated_image, new_rect.topleft)
-
-# Function to run the NEAT algorithm
 def run_neat(config):
     p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
@@ -69,6 +24,10 @@ def run_neat(config):
     p.add_reporter(stats)
     winner = p.run(eval_genomes, 50)
     print('\nBest genome:\n{!s}'.format(winner))
+
+def draw_checkpoints(screen, checkpoints):
+    for (cx, cy) in checkpoints:
+        pygame.draw.circle(screen, (255, 0, 0), (cx, cy), 10)
 
 # Function to evaluate the genomes
 def eval_genomes(genomes, config):
@@ -94,7 +53,10 @@ def eval_genomes(genomes, config):
                 run = False
                 pygame.quit()
                 quit()
-        if current_time - start_time > 30:  # Check if 30 seconds have passed
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Check if left mouse button clicked
+                        print("Clicked at:", event.pos)
+        if current_time - start_time > MAX_TIME:  # Check if 30 seconds have passed
             run = False
 
         for i, car in enumerate(cars):
@@ -111,10 +73,16 @@ def eval_genomes(genomes, config):
                 car.rotate('left')
             elif output[1] > 0.5:
                 car.rotate('right')
+            else:
+                car.rotate('none')
 
-            ge[i].fitness = car.distance_traveled
+            ge[i].fitness = car.distance_traveled * 0.2
+
+            if car.check_checkpoint():
+                ge[i].fitness += 100
 
         screen.blit(background, (0, 0))
+        draw_checkpoints(screen, CHECKPOINTS)
         for car in cars:
             car.draw(screen)
         pygame.display.flip()
