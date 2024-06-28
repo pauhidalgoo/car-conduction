@@ -36,7 +36,7 @@ class Car:
         pixel_color = background.get_at(self.rect.center)
         if pixel_color == BLACK:
             self.speed = 3
-            return False
+            return 3
         elif pixel_color == GREEN:
             self.speed = 2
             return False
