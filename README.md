@@ -1,3 +1,7 @@
+<!--- BADGES: START --->
+[![Scratch](https://img.shields.io/badge/Scratch-4D97FF?logo=scratch&logoColor=fff)](./Scratch/) [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](./Python/)
+<!--- BADGES: END --->
+
 # Car conduction learning
 > In this repo, there's two simple implementations of a way to teach a machine to drive a car around a track. This work was done in the context of a Codelearn summer camp with kids aged 9-14.
 
